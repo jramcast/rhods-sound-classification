@@ -1,7 +1,7 @@
-# urbansound-rhods-demo
+# Sound Classification Demo with Red Hat OpenShift Data Science
 
-In this demo, we use Red Hat OpenShift Data Science (RHODS) to train a model that classifies sounds.
-Sounds are classified into categories such as `car horn`.
+This demo uses Red Hat OpenShift Data Science (RHODS) to train and deploy a model that classifies sounds.
+Sounds are classified into categories such as `dog`.
 
 * Hybrid model deployment approach:
   * RHODS model serving: inference is performed in a cluster. Applications such as web front ends can send requests to this model.
