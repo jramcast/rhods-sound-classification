@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webapp
+  name: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+        - image: quay.io/jramcast/webapp:latest
+          imagePullPolicy: Always
+          name: webapp
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+          env:
+            - name: INFERENCE_ENDPOINT
+              value: to-be-defined

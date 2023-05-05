@@ -1,4 +1,4 @@
-const INFERENCE_BY_URL_ENDPOINT = process.env.INFERENCE_ENDPOINT || "http://localhost:5000/classify/blob"
+const INFERENCE_BY_URL_ENDPOINT = process.env.INFERENCE_ENDPOINT || "http://localhost:5000/classify/url"
 const INFERENCE_BY_BLOB_ENDPOINT = process.env.INFERENCE_ENDPOINT || "http://localhost:5000/classify/blob"
 
 
@@ -6,13 +6,13 @@ export function classifyUrl(url) {
 
     return fetch(INFERENCE_BY_URL_ENDPOINT, {
         method: "POST",
-        body: { url }
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ url })
     })
     .then(resp => resp.json())
-    .then(result => {
-        console.log("Clip classified:", result);
-        classificationResult.innerHTML = JSON.stringify(result);
-    });
 }
 
 export function classifyBlob(blob) {
@@ -23,8 +23,4 @@ export function classifyBlob(blob) {
         body: formData
     })
     .then(resp => resp.json())
-    .then(result => {
-        console.log("Clip classified:", result);
-        classificationResult.innerHTML = JSON.stringify(result);
-    });
 }

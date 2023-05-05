@@ -5,11 +5,16 @@ import { classifyUrl } from "../services/backend";
 export default function Home() {
     const [value, setValue] = useState("https://...");
     const [audioUrl, setAudioURL] = useState("");
+    const [classificationResult, setClassificationResult] = useState("");
 
 
     function playAndClassifySound(e) {
         setAudioURL(value);
-        classifyUrl(value);
+        classifyUrl(value)
+            .then(result => {
+                const message = `Predicted class: ${result.class_name} (${result.class_id})`;
+                setClassificationResult(message);
+            });
         e.preventDefault();
     }
 
@@ -37,6 +42,7 @@ export default function Home() {
                     </FormGroup>
                 </Form>
                 {audioUrl && renderAudioPlayer()}
+                <div>{classificationResult}</div>
             </PageSection>
         </Page>
     )

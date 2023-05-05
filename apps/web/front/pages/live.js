@@ -8,6 +8,7 @@ export default function Live() {
     const [errorMessage, setErrorMessage] = useState("");
     const [stream, setStream] = useState();
     const [isRecording, setIsRecording] = useState(false);
+    const [classificationResult, setClassificationResult] = useState("");
 
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ audio: true })
@@ -33,7 +34,11 @@ export default function Live() {
 
     function recordAndClassify() {
         record(stream)
-            .then(blob => { classifyBlob(blob); });
+            .then(classifyBlob)
+            .then(result => {
+                const message = `Predicted class: ${result.class_name} (${result.class_id})`;
+                setClassificationResult(message);
+            });
 
         if (isRecording) {
             setTimeout(() => {
@@ -50,7 +55,7 @@ export default function Live() {
                     <Button id="stopButton" variant="secondary" isDisabled={!isRecording} onClick={stop}>Stop</Button>
                 </ActionGroup>
                 <canvas id="audioPlot" width="500" height="100"></canvas>
-                <div id="classificationResult"></div>
+                <div>{classificationResult}</div>
             </>
         )
     }
