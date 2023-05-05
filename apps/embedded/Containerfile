@@ -1,0 +1,12 @@
+FROM fedora:36
+
+RUN yum install -y alsa-utils alsa-lib python-pip portaudio && \
+    yum clean all && \
+    rm -rf /var/cache/yum
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD python3 listen.py

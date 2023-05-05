@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Record Sound</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="startButton" onclick="startRecording()">Start Recording</button>
+    <button id="stopButton" onclick="stopRecording()">Stop Recording</button>
+
+    <canvas id="canvas" width="500" height="100"></canvas>
+    <div id="classificationResult"></div>
+    <script>
+        let mediaRecorder;
+        let dataArray;
+        let drawInterval;
+        let recordingAllowed = false;
+        let keepRecording = false;
+
+        const CLIP_SECONDS = 4;
+        const INFERENCE_ENDPOINT = "/classify";
+        const constraints = { audio: true };
+        const canvas = document.getElementById("canvas");
+        const canvasCtx = canvas.getContext("2d");
+        const startButton = document.getElementById("startButton");
+        const stopButton = document.getElementById("stopButton");
+        const classificationResult = document.getElementById("classificationResult");
+
+        navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+            recordingAllowed = true;
+            startRecording(stream);
+        }).catch(function (err) {
+            recordingAllowed = false;
+            alert("Error: " + err);
+        });
+
+        function startRecording(stream) {
+            if (!recordingAllowed) {
+                alert("Recording is not allowed");
+                return;
+            }
+
+            startButton.disabled = true;
+            keepRecording = true;
+
+            draw(stream);
+            record_and_classify(stream);
+        }
+
+
+        function stopRecording() {
+            keepRecording = false;
+            startButton.disabled = false;
+            clearInterval(drawInterval);
+        }
+
+
+        function record_and_classify(stream) {
+            record(stream)
+                .then(blob => { classify_audio(blob); });
+
+            if (keepRecording) {
+                setTimeout(() => {
+                    record_and_classify(stream);
+                }, 3000);
+            }
+        }
+
+
+        function record(stream) {
+            return new Promise((resolve, reject) => {
+                const chunks = [];
+                const recorder = new MediaRecorder(stream);
+                recorder.ondataavailable = (e) => {
+                    chunks.push(e.data);
+                };
+                recorder.onstop = (e) => {
+                    const blob = toBlob(chunks, recorder.mimeType);
+                    resolve(blob);
+                }
+                setTimeout(() => recorder.stop(), CLIP_SECONDS * 1000)
+                recorder.start();
+            });
+        }
+
+
+        function toBlob(chunks, type) {
+            const audioBlob = new Blob(chunks, { type });
+            const audioUrl = URL.createObjectURL(audioBlob, "audio");
+            console.log("New clip recorded:", audioUrl);
+            return audioBlob;
+        }
+
+
+        function classify_audio(blob) {
+            const formData = new FormData();
+            formData.append("audio", blob);
+            return fetch(INFERENCE_ENDPOINT, {
+                method: "POST",
+                body: formData
+            })
+            .then(resp => resp.json())
+            .then(result => {
+                console.log("Clip classified:", result);
+                classificationResult.innerHTML = JSON.stringify(result);
+            });
+        }
+
+        function draw(stream) {
+            const audioCtx = new AudioContext();
+            const analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 2048;
+            const source = audioCtx.createMediaStreamSource(stream);
+            source.connect(analyser);
+
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+            canvasCtx.lineWidth = 2;
+            canvasCtx.strokeStyle = "red";
+            canvasCtx.beginPath();
+            const sliceWidth = canvas.width * 7.0 / bufferLength;
+            drawInterval = setInterval(function () {
+                let x = 0;
+                analyser.getByteTimeDomainData(dataArray);
+                canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+                canvasCtx.beginPath();
+                let sliceIndex = 0;
+                for (let i = 0; i < bufferLength; i++) {
+                    const v = dataArray[i] / 128.0;
+                    const y = v * canvas.height / 2;
+                    if (i === 0) {
+                        canvasCtx.moveTo(x, y);
+                    } else {
+                        canvasCtx.lineTo(x, y);
+                    }
+                    x += sliceWidth;
+                    sliceIndex++;
+                    if (sliceIndex >= Math.floor(5000 / 30)) { // update every 30ms
+                        break;
+                    }
+                }
+                canvasCtx.lineTo(canvas.width, canvas.height / 2)
+                canvasCtx.stroke();
+            }, 30);
+        }
+    </script>
+</body>
+
+</html>

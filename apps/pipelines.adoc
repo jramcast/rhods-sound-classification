@@ -1,0 +1,82 @@
+== OpenShift Pipelines Notes
+
+Installing Pipelines CLI (`tkn`) https://access.redhat.com/documentation/en-us/openshift_container_platform/4.12/html-single/cli_tools/index#pipelines-cli-tkn
+
+== Create Tasks
+
+[subs="+quotes"]
+----
+[user@host ~]$ oc create -f _FILE.yaml_
+----
+
+or by using `tkn task create`.
+
+
+== List Tasks
+
+Use the following command to list tasks:
+
+[subs="+quotes"]
+----
+[user@host ~]$ *tkn tasks list*
+----
+
+== Get Information About a Task or ClusterTask
+
+[subs="+quotes"]
+----
+[user@host ~]$ *tkn clustertask describe buildah*
+----
+
+== Create Pipelines
+
+[subs="+quotes"]
+----
+[user@host ~]$ oc create -f _FILE.yaml_
+----
+
+
+== List Pipelines
+
+Use the following command to list pipelines:
+
+[subs="+quotes"]
+----
+[user@host ~]$ *tkn pipeline list*
+----
+
+
+== Run a Pipeline
+
+----
+[user@host ~]$ *tkn pipeline start build-and-deploy \
+    -w name=shared-workspace,volumeClaimTemplateFile=https://raw.githubusercontent.com/openshift/pipelines-tutorial/master/01_pipeline/03_persistent_volume_claim.yaml \
+    --use-param-defaults*
+----
+
+
+== Pruning
+
+OCP 4.10 - OCP pipelines 1.8.2
+
+* When a PipelineRun is deleted, its associated PVC is deleted
+* When Pipeline is deleted, its associated PipelineRuns are not deleted
+
+You can configure the `TektonConfig` `config` CR to prune specific resources.
+
+
+== Pipelines as Code
+
+DISCONECTION ALERT: pipelines won't work on disconnected environments.
+
+=== Create
+
+1. An admin runs `tkn pac bootstrap github-app` to create an app that will connect OCP with GH.
+A single app is enough.
+
+2. Navigate to `https://github.com/apps/sounds-rhods-demo` and install the Github app in your repository.
+
+3. Run `tkn pack create repo` to create the corresponding `Repository` CRD in your OCP cluster.
+
+Reference: https://pipelinesascode.com/
+
