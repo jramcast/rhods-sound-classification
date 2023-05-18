@@ -1,12 +1,12 @@
-FROM fedora:36
-
-RUN yum install -y alsa-utils alsa-lib python-pip portaudio && \
-    yum clean all && \
-    rm -rf /var/cache/yum
+FROM registry.access.redhat.com/ubi9/python-39
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+
+RUN pip install --upgrade pip==23.1.2 && \
+    pip install -r requirements.txt
 
 COPY . .
 
-CMD python3 listen.py
+VOLUME [ "/data" ]
+
+ENTRYPOINT ["python", "main.py"]

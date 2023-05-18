@@ -1,4 +1,4 @@
-name: urbansound-rhods-demo-app
+name: rhods-sound-classification-webapp-backend
 channels:
   - conda-forge
   - defaults

@@ -18,21 +18,21 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 CLASSES = [
-    "air_conditioner",
-    "car_horn",
-    "children_playing",
-    "dog_bark",
-    "drilling",
-    "engine_idling",
-    "gun_shot",
-    "jackhammer",
-    "siren",
-    "street_music"
+    'dog',
+    'chainsaw',
+    'crackling_fire',
+    'helicopter',
+    'rain',
+    'crying_baby',
+    'clock_tick',
+    'sneezing',
+    'rooster',
+    'sea_waves'
 ]
 
 INFERENCE_ENDPOINT = os.getenv(
     "INFERENCE_ENDPOINT",
-    "https://urban-sounds-classifier-urban-sounds.apps.rhods-internal.61tk.p1.openshiftapps.com/v2/models/urban-sounds-classifier/infer"
+    "https://soundclassifier-jairamir-sounds-rhods.apps.tools-na100.dev.ole.redhat.com/v2/models/soundclassifier/infer"
 )
 
 
@@ -52,7 +52,7 @@ def classify_sound(full_filename: os.PathLike):
         "inputs": [
             {
                 # The ONNX model requires this name
-                "name": "mels_input",
+                "name": "mels",
                 "shape": [1, 128],
                 "datatype": "FP32",
                 "data": [mels.tolist()]
@@ -64,6 +64,7 @@ def classify_sound(full_filename: os.PathLike):
     # https://github.com/kserve/modelmesh-serving/blob/main/docs/predictors/run-inference.md#inference-using-rest
     response = requests.post(INFERENCE_ENDPOINT, json=payload)
     result =  response.json()
+    print("RESULT", result)
     class_id = np.argmax(result["outputs"][0]["data"])
     class_name = CLASSES[class_id]
     return int(class_id) ,class_name
