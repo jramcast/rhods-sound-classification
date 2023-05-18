@@ -129,5 +129,8 @@ dmypy.json
 .pyre/
 
 
+# IDEs
+.vscode
+
 # ONNX models
 *.onnx
