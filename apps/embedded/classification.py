@@ -5,21 +5,21 @@ from preprocessing import wav_to_mels
 
 def get_class_label_by_id(id):
     classes = [
-        "air_conditioner",
-        "car_horn",
-        "children_playing",
-        "dog_bark",
-        "drilling",
-        "engine_idling",
-        "gun_shot",
-        "jackhammer",
-        "siren",
-        "street_music"
+        'dog',
+        'chainsaw',
+        'crackling_fire',
+        'helicopter',
+        'rain',
+        'crying_baby',
+        'clock_tick',
+        'sneezing',
+        'rooster',
+        'sea_waves'
     ]
     return classes[id]
 
 
-onnx_filename = "urban_sounds_model_classifier.onnx"
+onnx_filename = "sound_classifier.onnx"
 
 sess = rt.InferenceSession(
     onnx_filename,
