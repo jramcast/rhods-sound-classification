@@ -255,7 +255,48 @@ Note that the notebook tests the same model by using two approaches:
 g. Verify that the notebook displays the estimated class both by using the local model and the deployed model.
 
 
-9. Deploy the applications that use the model.
+9. *Deploy the model embedded in a CLI*
++
+Build a container image for a CLI that includes the model.
+This container image embeds the model, so you can use this application to perform inference at the edge.
++
+[NOTE]
+====
+Under development...
+====
+
+a. Log in with `oc`.
+
+b. Create the pipeline.
++
+[subs="+quotes"]
+----
+$ oc apply -f
+----
+
+c. Run the pipeline to build the image.
+
+
+d. Log in podman into the sandbox image registry.
++
+[subs="+quotes"]
+----
+$ podman login -u __YOUR_USER__ -p $(oc whoami -t) \
+  default-route-openshift-image-registry.apps.__YOUR_SANDBOX__.openshiftapps.com
+----
+
+c. Run the container to classify a sound.
++
+[subs="+quotes"]
+----
+$ podman run \
+  default-route-openshift-image-registry.apps.__YOUR_SANDBOX__.openshiftapps.com/__YOUR_USER__/sound-classification-cli \
+  https://github.com/jramcast/rhods-sound-classification/raw/main/samples/waves.wav
+----
++
+This container includes the model, so you can use it to perform inference at the edge.
+
+10. *Deploy an application that uses the deployed model via the Model Service REST API*.
 +
 [NOTE]
 ====
