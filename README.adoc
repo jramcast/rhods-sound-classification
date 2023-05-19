@@ -35,20 +35,25 @@ b. Log in to the sandbox with your Red{nbsp}Hat credentials.
 
 2. Open Red{nbsp}Hat OpenShift Data Science (RHODS).
 
-a. Click the applications menu in the navigation bar.
+a. Click the applications menu in the top navigation bar,
+then click btn:[Red{nbsp}Hat OpenShift Data Science].
++
+image::./assets/ocp-top-bar.png[]
 
-b. Log in with the same credentials that you used for the sandbox.
+b. If prompted, log in with your Red{nbsp}Hat OpenShift credentials.
 
 
 3. Configure the Jupyter workbench of your data science project.
 
 a. Click btn:[Data Science Projects] in the left sidebar.
++
+image::./assets/rhods-side-menu.png[]
 
 b. The project list displays one project called `_youruser_-dev`.
 This is the project that the developer sandbox precreates for you.
 Click this project.
 
-c. Click btn:[Create workbench] and complete the form with the following values.
+c. In the project page, click btn:[Create workbench] and complete the form with the following values.
 +
 [cols="1,1"]
 |===
@@ -66,6 +71,8 @@ Leave the default values for the rest of the fields.
 
 d. Click btn:[Create workbench].
 RHODS creates the workbench and the associated persistent storage.
++
+image::./assets/created-workbench.png[]
 
 4. Configure a data connection.
 +
@@ -77,6 +84,8 @@ a. Click btn:[Add data connection].
 b. In the `name` field, enter `model-storage-data-connection`.
 
 c. Complete the `AWS_*` fields  with the connection details of an S3-compatible API.
++
+
 +
 [NOTE]
 ====
