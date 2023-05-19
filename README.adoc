@@ -35,20 +35,27 @@ b. Log in to the sandbox with your Red{nbsp}Hat credentials.
 
 2. Open Red{nbsp}Hat OpenShift Data Science (RHODS).
 
-a. Click the applications menu in the navigation bar.
+a. Click the applications menu in the top navigation bar,
+then click btn:[Red{nbsp}Hat OpenShift Data Science].
++
+image::./assets/ocp-top-bar.png[width=50%,align="center"]
 
-b. Log in with the same credentials that you used for the sandbox.
+b. If prompted, log in with your Red{nbsp}Hat OpenShift credentials.
 
 
 3. Configure the Jupyter workbench of your data science project.
 
 a. Click btn:[Data Science Projects] in the left sidebar.
++
+image::./assets/rhods-side-menu.png[width=50%,align="center"]
 
-b. The project list displays one project called `_youruser_-dev`.
-This is the project that the developer sandbox precreates for you.
-Click this project.
+b. Create a new project.
+Click btn:[Create data science project].
+In the modal window that opens, enter a name and click btn:[Create].
 
-c. Click btn:[Create workbench] and complete the form with the following values.
+c. Click the newly created project.
+
+d. In the project page, click btn:[Create workbench] and complete the form with the following values.
 +
 [cols="1,1"]
 |===
@@ -66,6 +73,8 @@ Leave the default values for the rest of the fields.
 
 d. Click btn:[Create workbench].
 RHODS creates the workbench and the associated persistent storage.
++
+image::./assets/created-workbench.png[]
 
 4. Configure a data connection.
 +
@@ -78,9 +87,11 @@ b. In the `name` field, enter `model-storage-data-connection`.
 
 c. Complete the `AWS_*` fields  with the connection details of an S3-compatible API.
 +
+image::./assets/data-connection-form.png[width=60%,align="center"]
++
 [NOTE]
 ====
-This demo uses IBM Cloud Object Storage, but you can use any storage service that provides an S3 API.
+This example uses IBM Cloud Object Storage, but you can use any storage service that provides an S3 API.
 ====
 
 d. In the `Connected workbench` field, select `pytorch`
@@ -94,29 +105,30 @@ RHODS restarts the worbench to inject the variables.
 +
 A RHODS model server can serve the models that you store in the storage layer of a data connection.
 
-a. Click btn:[Configure server].
+a. Scroll down to the `Models and model servers` section and click btn:[Configure server].
+
 
 b. Activate the `Make deployed models available through an external route` option.
 Leave the rest of the values unchanged.
 
 c. Click btn:[Configure].
 +
-[IMPORTANT]
-====
-Due to the restricted permissions of the sandbox, you might see a `403` error message.
+The model server is now configured and ready to serve models.
 
-You can safely ignore the message. Close the modal window and refresh the page.
-The UI should display a model server called `ovms` with zero deployed models.
-====
 
 
 6. Open the workbench and clone the demo code.
+You will use this code to train and deploy the model.
 
-a. In the `pytorch` workbench, click btn:[Open].
+a. Make sure that the `pytorch` workbench is running and click btn:[Open].
++
+image::./assets/workbench-open-link.png[width=50%,align="center"]
 
-b. If prompted, log in with your Red{nbsp}Hat credentials.
+b. If prompted, log in with your Red{nbsp}Hat OpenShift credentials.
 
 c. Click btn:[Allow selected permissions] to grant the workbench access to your data science project.
+
+d. Verify that the JuyperLab interface opens in a new browser tab.
 
 
 7. Clone the code repository.
@@ -124,12 +136,17 @@ c. Click btn:[Allow selected permissions] to grant the workbench access to your 
 a. Click the btn:[Git] icon in the left sidebar.
 
 b. Click btn:[Clone a repository].
-Enter https://github.com/jramcast/rhods-sound-classification as the repository, and click btn:[Clone].
++
+image::./assets/git-clone-menu.png[width=50%,align="center"]
 
-c. In the file explorer, navigate to the `rhods-sound-classfication` directory.
+c. Enter https://github.com/jramcast/rhods-sound-classification as the repository, and click btn:[Clone].
+
+d. In the file explorer, navigate to the `rhods-sound-classfication` directory.
 
 
-8. Follow the instructions in the Jupyter notebooks and run them to download, analyze the dataset, and train the model.
+8. Download the dataset, analyze the data, and train the model.
++
+Follow the instructions in the Jupyter notebooks and run them to download, analyze the dataset, and train the model.
 
 a. Download the dataset.
 +
@@ -146,20 +163,22 @@ c. Train the model.
 Double-click the `2-training.ipynb` notebook.
 In the top navigation bar, click menu:Run[Run All Cells].
 +
-Note that the last cell of this notebook uploads the trained model to your S3 storage bucket.
+Note that the last cell of this notebook uploads the trained model, which is stored in the `sound_classifier.onnx` file, to the root directory of your S3 storage bucket.
 
 9. Deploy the model with the RHODS model server.
 
 a. Return to the RHODS data science project browser tab.
 
 b. In the `ovms` model server, click btn:[Deploy Model].
++
+image::./assets/deploy-model-btn.png[width=90%,align="center"]
 
 c. Complete the form with the following values.
 +
 [cols="1,1"]
 |===
 |*Model Name*
-|`sound-classifier-model`
+|`sound_classifier`
 
 |*Model framework*
 |`onnx - 1`
@@ -170,29 +189,29 @@ c. Complete the form with the following values.
 |*Existing data connection* - Folder path
 |`sound_classifier.onnx`
 |===
++
+The data connection configuration values allow RHODS to download the `sound_classifier.onnx` model file from S3 and use it to serve model with the OpenVINO model sever.
 
 d. Click btn:[Deploy].
 Wait until the model status is ready.
 +
-[IMPORTANT]
-====
-The model server might not detect when the model becomes available.
-
-If the UI still displays the `Waiting for runtime Pod to become available` status after several minutes, then copy the inference endpoint and navigate to this endpoint in a new browser tab.
-
-If you get a JSON response with the `Method Not Allowed` message, then the model is ready for inference.
-====
+image::./assets/model-server-ready.png[width=90%,align="center"]
 
 10. Run the test notebook.
 
 a. Copy the inference endpoint of the deployed model.
 
-b. In the `pytorch` workbench, click btn:[⋮], then click btn:[Edit workbench].
+b. In the `pytorch` workbench, click btn:[⋮], and then click btn:[Edit workbench].
++
+image::./assets/edit-workbench-btn.png[width=40%,align="center"]
 
 c. Scroll down to the `Environment variables` and add a new variable.
 Select `Config Map` as the variable type, then select `Key / value`, and set the key and value of the variable:
   * Key: `INFERENCE_ENDPOINT`.
   * Value: The inference endpoint of the deployed model.
+  +
++
+image::./assets/workbench-env-vars.png[width=80%,align="center"]
 
 d. Click btn:[Update workbench] and wait for the workbench to restart.
 
@@ -200,6 +219,11 @@ e. Return to the browser tab where Jupyter is running and refresh the tab.
 
 f. Double-click the `3-test.ipynb` notebook.
 In the top navigation bar, click menu:Run[Run All Cells].
++
+Note that the notebook tests the same model by using two approaches:
++
+  * The first test uses the `sound_classifier.onnx` model file that resulted from training the model.
+  * The second test verifies the model deployed with RHODS model serving, by sending an HTTP request to the inference endpoint.
 
 g. Verify that the notebook displays the estimated class both by using the local model and the deployed model.
 
