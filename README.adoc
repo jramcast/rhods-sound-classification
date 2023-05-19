@@ -4,7 +4,7 @@
 
 == Sound Classification Demo with Red Hat OpenShift Data Science
 
-This demo uses Red Hat OpenShift Data Science (RHODS) to train and deploy a model that classifies sounds.
+This demo uses Red{nbsp}Hat OpenShift Data Science (RHODS) to train and deploy a model that classifies sounds.
 Sounds are classified into categories such as `dog`.
 
 * Hybrid model deployment approach:
@@ -15,7 +15,13 @@ Sounds are classified into categories such as `dog`.
 
 To complete this demo, you need the following:
 
-* A Red{nbsp}Hat account (to create the developer sandbox).
+* RHODS installed and running in a cluster.
++
+[NOTE]
+====
+You can get an instance of RHODS in the https://developers.redhat.com/developer-sandbox[Developer Sandbox].
+====
+
 * Access to an S3 storage bucket (to store the trained model).
 +
 [NOTE]
@@ -26,30 +32,30 @@ You can use the free tiers offered by services such as _Amazon S3_ or _IBM Cloud
 
 == Instructions
 
-1. Start the Developer Sandbox.
+1. *Open Red{nbsp}Hat OpenShift Data Science (RHODS).*
 
-a. Start the sandbox.
+a. In a web browser, navigate to the Web Console of your Red{nbsp}Hat OpenShift cluster, and log in.
 
-b. Log in to the sandbox with your Red{nbsp}Hat credentials.
-
-
-2. Open Red{nbsp}Hat OpenShift Data Science (RHODS).
-
-a. Click the applications menu in the top navigation bar,
+b. Click the applications menu in the top navigation bar of OpenShift,
 then click btn:[Red{nbsp}Hat OpenShift Data Science].
 +
-image::./assets/ocp-top-bar.png[width=50%,align="center"]
+image::./assets/ocp-top-bar.png[width=35%,align="center"]
 
-b. If prompted, log in with your Red{nbsp}Hat OpenShift credentials.
+c. If prompted, log in with your Red{nbsp}Hat OpenShift credentials.
 
 
-3. Configure the Jupyter workbench of your data science project.
+
+
+2. *Configure the workbench of your data science project.*
++
+A RHODS workbench is a containerized application that includes commonly used data science tools and libraries, such as JupyterLab, Tensorflow, and PyTorch.
+RHODS provides you with a collection of workbench container images, each one preconfigured and tailored to a specific data science use case.
 
 a. Click btn:[Data Science Projects] in the left sidebar.
 +
-image::./assets/rhods-side-menu.png[width=50%,align="center"]
+image::./assets/rhods-side-menu.png[width=35%,align="center"]
 
-b. Create a new project.
+b. Create a data science project.
 Click btn:[Create data science project].
 In the modal window that opens, enter a name and click btn:[Create].
 
@@ -60,26 +66,36 @@ d. In the project page, click btn:[Create workbench] and complete the form with 
 [cols="1,1"]
 |===
 |*Name*
-|pytorch
+|`pytorch`
 
 |*Notebook image* - Image selection
-|PyTorch
+|`PyTorch`
 
 |*Notebook image* - Version selection
 |Select the option with PyTorch v1.13.1
 |===
 +
-Leave the default values for the rest of the fields.
+Do not modify the default values of the rest of the fields.
++
+[NOTE]
+====
+If you choose a different name for the workbench, you will need to adjust
+the following steps accordingly.
+====
 
-d. Click btn:[Create workbench].
+e. Click btn:[Create workbench].
 RHODS creates the workbench and the associated persistent storage.
 +
-image::./assets/created-workbench.png[]
+image::./assets/created-workbench.png[width=90%,align="center"]
 
-4. Configure a data connection.
+
+
+3. *Configure a data connection.*
 +
-The data connection provides the workbench with access to a storage layer to save the trained model.
-Additionally, a data connection also provides RHODS Model Serving with the files required to serve a model.
+A data connection provides the workbench with access to a storage layer.
+In this demo, you use the storage layer to save the trained model.
++
+Additionally, a data connection also configures RHODS Model Serving with the required settings to download the model to be served.
 
 a. Click btn:[Add data connection].
 
@@ -87,7 +103,7 @@ b. In the `name` field, enter `model-storage-data-connection`.
 
 c. Complete the `AWS_*` fields  with the connection details of an S3-compatible API.
 +
-image::./assets/data-connection-form.png[width=60%,align="center"]
+image::./assets/data-connection-form.png[width=70%,align="center"]
 +
 [NOTE]
 ====
@@ -101,9 +117,12 @@ e. Click btn:[Add data connection].
 This data connection injects the S3 configuration values as environement variables in the `pytorch` workbench.
 RHODS restarts the worbench to inject the variables.
 
-5. Create a model server.
+
+
+
+4. *Create a model server.*
 +
-A RHODS model server can serve the models that you store in the storage layer of a data connection.
+A RHODS model server can serve the models that you save in the storage layer of a data connection.
 
 a. Scroll down to the `Models and model servers` section and click btn:[Configure server].
 
@@ -117,12 +136,14 @@ The model server is now configured and ready to serve models.
 
 
 
-6. Open the workbench and clone the demo code.
+
+5. *Open the workbench and clone the demo code.*
++
 You will use this code to train and deploy the model.
 
 a. Make sure that the `pytorch` workbench is running and click btn:[Open].
 +
-image::./assets/workbench-open-link.png[width=50%,align="center"]
+image::./assets/workbench-open-link.png[width=40%,align="center"]
 
 b. If prompted, log in with your Red{nbsp}Hat OpenShift credentials.
 
@@ -130,21 +151,20 @@ c. Click btn:[Allow selected permissions] to grant the workbench access to your 
 
 d. Verify that the JuyperLab interface opens in a new browser tab.
 
+e. Click the btn:[Git] icon in the left sidebar.
 
-7. Clone the code repository.
-
-a. Click the btn:[Git] icon in the left sidebar.
-
-b. Click btn:[Clone a repository].
+f. Click btn:[Clone a repository].
 +
-image::./assets/git-clone-menu.png[width=50%,align="center"]
+image::./assets/git-clone-menu.png[width=40%,align="center"]
 
-c. Enter https://github.com/jramcast/rhods-sound-classification as the repository, and click btn:[Clone].
+g. Enter https://github.com/jramcast/rhods-sound-classification as the repository, and click btn:[Clone].
 
-d. In the file explorer, navigate to the `rhods-sound-classfication` directory.
+h. In the file explorer, navigate to the `rhods-sound-classfication` directory.
 
 
-8. Download the dataset, analyze the data, and train the model.
+
+
+6. *Download the dataset, analyze the data, and train the model.*
 +
 Follow the instructions in the Jupyter notebooks and run them to download, analyze the dataset, and train the model.
 
@@ -165,13 +185,16 @@ In the top navigation bar, click menu:Run[Run All Cells].
 +
 Note that the last cell of this notebook uploads the trained model, which is stored in the `sound_classifier.onnx` file, to the root directory of your S3 storage bucket.
 
-9. Deploy the model with the RHODS model server.
+
+
+
+7. *Deploy the model with the RHODS model server.*
 
 a. Return to the RHODS data science project browser tab.
 
 b. In the `ovms` model server, click btn:[Deploy Model].
 +
-image::./assets/deploy-model-btn.png[width=90%,align="center"]
+image::./assets/deploy-model-btn.png[width=80%,align="center"]
 
 c. Complete the form with the following values.
 +
@@ -190,20 +213,24 @@ c. Complete the form with the following values.
 |`sound_classifier.onnx`
 |===
 +
-The data connection configuration values allow RHODS to download the `sound_classifier.onnx` model file from S3 and use it to serve model with the OpenVINO model sever.
+The data connection configuration values allow RHODS to download the `sound_classifier.onnx` model file from S3 and use it to serve the model with the OpenVINO model sever.
 
 d. Click btn:[Deploy].
 Wait until the model status is ready.
 +
 image::./assets/model-server-ready.png[width=90%,align="center"]
 
-10. Run the test notebook.
+
+
+
+
+8. *Run the test notebook.*
 
 a. Copy the inference endpoint of the deployed model.
 
 b. In the `pytorch` workbench, click btn:[⋮], and then click btn:[Edit workbench].
 +
-image::./assets/edit-workbench-btn.png[width=40%,align="center"]
+image::./assets/edit-workbench-btn.png[width=30%,align="center"]
 
 c. Scroll down to the `Environment variables` and add a new variable.
 Select `Config Map` as the variable type, then select `Key / value`, and set the key and value of the variable:
@@ -211,7 +238,7 @@ Select `Config Map` as the variable type, then select `Key / value`, and set the
   * Value: The inference endpoint of the deployed model.
   +
 +
-image::./assets/workbench-env-vars.png[width=80%,align="center"]
+image::./assets/workbench-env-vars.png[width=70%,align="center"]
 
 d. Click btn:[Update workbench] and wait for the workbench to restart.
 
@@ -228,7 +255,7 @@ Note that the notebook tests the same model by using two approaches:
 g. Verify that the notebook displays the estimated class both by using the local model and the deployed model.
 
 
-11. Deploy the applications that use the model.
+9. Deploy the applications that use the model.
 +
 [NOTE]
 ====
