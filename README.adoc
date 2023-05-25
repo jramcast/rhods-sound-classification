@@ -1,5 +1,7 @@
 :experimental:
 
+:github_user:  jramcast
+
 
 
 == Sound Classification Demo with Red Hat OpenShift Data Science
@@ -15,6 +17,7 @@ Sounds are classified into categories such as `dog`.
 
 To complete this demo, you need the following:
 
+
 * RHODS installed and running in a cluster.
 +
 [NOTE]
@@ -27,6 +30,13 @@ You can get an instance of RHODS in the https://developers.redhat.com/developer-
 [NOTE]
 ====
 You can use the free tiers offered by services such as _Amazon S3_ or _IBM Cloud Object Storage_ (to store the trained model).
+====
+
+* Podman (or Docker) and the `oc` CLI installed on your computer.
++
+[NOTE]
+====
+You can download `oc` from https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/. Select your operating system, download the compressed file, and extract its contents into a directory that is on your `PATH`.
 ====
 
 
@@ -157,7 +167,7 @@ f. Click btn:[Clone a repository].
 +
 image::./assets/git-clone-menu.png[width=40%,align="center"]
 
-g. Enter https://github.com/jramcast/rhods-sound-classification as the repository, and click btn:[Clone].
+g. Enter https://github.com/{github_user}/rhods-sound-classification as the repository, and click btn:[Clone].
 
 h. In the file explorer, navigate to the `rhods-sound-classfication` directory.
 
@@ -255,48 +265,118 @@ Note that the notebook tests the same model by using two approaches:
 g. Verify that the notebook displays the estimated class both by using the local model and the deployed model.
 
 
-9. *Deploy the model embedded in a CLI*
+
+
+
+9. *Create a pipeline to deploy the model embedded in a CLI*
 +
 Build a container image for a CLI that includes the model.
 This container image embeds the model, so you can use this application to perform inference at the edge.
+
+a. In the Red{nbsp}Hat OpenShift web console, select the btn:[Developer] perspective, and click btn:[Secrets], then click menu:Create[Key/value secret].
++
+The pipeline requires this secret to download the model from S3 and include it in the container image.
+
+b. Enter `s3-model-storage` as the btn:[Secret name].
 +
 [NOTE]
 ====
-Under development...
+If you use a different name, then you will have to adjust this name in the pipeline run.
 ====
 
-a. Log in with `oc`.
+c. Add the following key/values to the secret:
++
+[compact]
+* `AWS_ACCESS_KEY_ID`
+* `AWS_DEFAULT_REGION`
+* `AWS_S3_BUCKET`
+* `AWS_S3_ENDPOINT`
+* `AWS_SECRET_ACCESS_KEY`
++
+Use the same values that you have used to define the data connection in your RHODS project.
++
+[NOTE]
+====
+After adding one key/value, click btn:[Add key/value] to add more.
+====
+Click btn:[Create].
 
-b. Create the pipeline.
+d. From the developer perspective of the Red{nbsp}Hat OpenShift web console, click btn:[+Add].
+
+e. In the btn:[From Local Machine] card, click btn:[Import YAML].
+
+f. Paste the contents of the https://github.com/{github_user}/rhods-sound-classification/blob/main/apps/embedded/pipelines/pipeline.yaml file and click btn:[Create].
++
+This YAML creates the pipeline that builds the container image for the CLI application.
+
+g. Find the pipeline that you just created.
++
+In the navigation pane, click btn:[Pipelines].
+Verify that the page lists one pipeline.
+
+h. Run the pipeline.
+Click btn:[⋮], then click btn:[Start].
++
+In the form that opens, select `VolumeClaimTemplate` as the btn:[shared-workspace].
+If you previously created the S3 secrets with a name different from `s3-model-storage`, adjust the btn:[s3-secret] accordingly.
++
+Click btn:[Start].
++
+Wait for the pipeline to finish.
+If the pipeline succeeds, then the container image of the CLI application should be available in the Red{nbsp}Hat OpenShift internal registry.
+
+
+10. *Run the CLI*
+
+a. Log in to Red{nbsp}Hat OpenShift with the `oc` CLI.
++
+In the Red{nbsp}Hat OpenShift web console, click btn:[your-username] in the upper-right corner, then click btn:[Copy login command].
++
+Log in if prompted, and click btn:[Display Token].
+Copy the `oc login` command under btn:[Log in with this token].
++
+Open a new terminal window, and execute the command that you just copied:
++
+[subs=+quotes,source,shell]
+----
+$ *oc login  \
+--token=_YOUR-TOKEN_
+--server=https://_OPENSHIFT-API_*
+Logged into ... using the token provided.
+
+_...output omitted..._
+
+Using project ...
+----
+
+b. Log in with podman into the OpenShift image registry.
+Replace `__YOUR_USER__` and `__YOUR_SANDBOX__` to match the domain of your OpenShift cluster.
 +
 [subs="+quotes"]
 ----
-$ oc apply -f
+$ *podman login -u __YOUR_USER__ -p $(oc whoami -t) \
+  default-route-openshift-image-registry.apps.__YOUR_SANDBOX__.openshiftapps.com*
+
+Login Succeeded!
 ----
 
-c. Run the pipeline to build the image.
-
-
-d. Log in podman into the sandbox image registry.
+c. Run the CLI container to classify a sound.
 +
-[subs="+quotes"]
+[subs="+quotes,+attributes"]
 ----
-$ podman login -u __YOUR_USER__ -p $(oc whoami -t) \
-  default-route-openshift-image-registry.apps.__YOUR_SANDBOX__.openshiftapps.com
-----
-
-c. Run the container to classify a sound.
-+
-[subs="+quotes"]
-----
-$ podman run \
+$ *podman run \
   default-route-openshift-image-registry.apps.__YOUR_SANDBOX__.openshiftapps.com/__YOUR_USER__/sound-classification-cli \
-  https://github.com/jramcast/rhods-sound-classification/raw/main/samples/waves.wav
+  https://github.com/{github_user}/rhods-sound-classification/raw/main/samples/waves.wav*
+
+Downloading file...
+Classifying...
+
+ * Class: clock_tick (6)
 ----
 +
 This container includes the model, so you can use it to perform inference at the edge.
 
-10. *Deploy an application that uses the deployed model via the Model Service REST API*.
+10. *Deploy a web application that uses the deployed model via the Model Service REST API*.
 +
 [NOTE]
 ====
