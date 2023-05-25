@@ -9,9 +9,10 @@
 This demo uses Red{nbsp}Hat OpenShift Data Science (RHODS) to train and deploy a model that classifies sounds.
 Sounds are classified into categories such as `dog`.
 
-* Hybrid model deployment approach:
-  * RHODS model serving: inference is performed in a cluster. Applications such as web front ends can send requests to this model.
-  * Embedded model serving: the model can be deployed to devices such as RPI, to perform inference at the edge.
+The model is deployed in two ways:
+
+* RHODS model serving: inference is performed in a cluster. Applications such as web front ends can send requests to this model.
+* Embedded model serving: the model can be embedded in a container image and therefore deployed to devices such as RPI, to perform inference at the edge.
 
 image::./assets/rhods-sound-demo diagram.svg[width=100%,align="center"]
 
