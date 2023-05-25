@@ -1,24 +1,32 @@
 import { useState, useEffect } from "react";
 import { Button, ActionGroup, Page, PageSection, Alert } from '@patternfly/react-core';
 import { startWavePlot, clearWavePlot, record } from "../services/audio"
-import { classifyBlob } from "../services/backend"
+import * as Backend from "../services/backend";
 
-export default function Live() {
+export default function Live({ backendRoute }) {
     const [recordingAllowed, setRecordingAllowed] = useState(undefined);
     const [errorMessage, setErrorMessage] = useState("");
     const [stream, setStream] = useState();
     const [isRecording, setIsRecording] = useState(false);
     const [classificationResult, setClassificationResult] = useState("");
 
+    Backend.setBackendRoute(backendRoute);
+
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(stream => {
-                setRecordingAllowed(true);
-                setStream(stream);
-            }).catch(() => {
-                setRecordingAllowed(false);
-                setErrorMessage("Recording not allowed.");
-            });
+        if(!navigator.mediaDevices) {
+            setRecordingAllowed(false);
+            setErrorMessage("Media recording devices are only available under HTTPS.");
+        } else {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    setRecordingAllowed(true);
+                    setStream(stream);
+                }).catch(() => {
+                    setRecordingAllowed(false);
+                    setErrorMessage("Recording not allowed.");
+                });
+        }
+
     });
 
     function start() {
@@ -34,7 +42,7 @@ export default function Live() {
 
     function recordAndClassify() {
         record(stream)
-            .then(classifyBlob)
+            .then(Backend.classifyBlob)
             .then(result => {
                 const message = `Predicted class: ${result.class_name} (${result.class_id})`;
                 setClassificationResult(message);
@@ -73,6 +81,8 @@ export default function Live() {
     )
 }
 
-
-
+// This gets called on every request
+export async function getServerSideProps() {
+    return { props: { backendRoute: process.env.BACKEND } };
+}
 

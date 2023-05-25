@@ -376,12 +376,34 @@ Classifying...
 +
 This container includes the model, so you can use it to perform inference at the edge.
 
-10. *Deploy a web application that uses the deployed model via the Model Service REST API*.
+11. *Deploy a web application that uses the deployed model via the Model Service REST API*.
+
+a. From the developer perspective of the OpenShift web console, and click btn:[+Add], then click btn:[Import YAML].
+
+b. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/back/k8s.yaml file.
+Replace the value of the `INFERENCE_ENDPOINT` environment variable with the inference URL of the model that you have deployed with RHODS Model Serving.
++
+Click btn:[Create].
+
+c. In the topology view, click the Python icon that represents the backend application that you just deployed.
++
+In the pane that opens, copy the URL of the route from the btn:[Routes] section.
+You must pass this URL as an environment variable to the front end.
+
+
+d. Click btn:[+Add], then click btn:[Import YAML].
+
+e. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/front/k8s.yaml file.
+Replace the value of the `BACKEND` environment variable with the route URL of the backend.
++
+Click btn:[Create].
+
+f. From the topology view, open the URL of the front-end application.
+
+g. In the front-end application, enter the https://github.com/jramcast/rhods-sound-classification/raw/main/samples/waves.wav URL and wait for the application to classify the sound.
 +
 [NOTE]
 ====
-Under development...
+The btn:[Live Recording] section can categorize audio recorded from the microphone.
+To use this feature, however, you must expose the front end service by using an HTTPS/TLS route, which is out of the scope of this demo.
 ====
-
-
-
