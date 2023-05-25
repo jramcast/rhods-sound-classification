@@ -17,3 +17,13 @@ Run the built app in production mode:
 ```
 npm start
 ```
+
+## Container image
+
+This application is available as a container image:
+
+```
+podman run --rm \
+-p 3000:3000 \
+quay.io/jramcast/rhods-sound-classification-web-frontend
+```

@@ -2,22 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: webapp
-  name: webapp
+    app: rhods-sound-classification-web-backend
+    app.kubernetes.io/part-of: rhods-sound-classification-web-app
+  name: rhods-sound-classification-web-backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webapp
+      app: rhods-sound-classification-web-backend
   template:
     metadata:
       labels:
-        app: webapp
+        app: rhods-sound-classification-web-backend
     spec:
       containers:
-        - image: quay.io/jramcast/webapp:latest
+        - image: quay.io/jramcast/rhods-sound-classification-web-backend:latest
           imagePullPolicy: Always
-          name: webapp
+          name: rhods-sound-classification-web-backend
           ports:
             - containerPort: 5000
               protocol: TCP

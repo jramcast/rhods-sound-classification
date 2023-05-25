@@ -1,5 +1,12 @@
-const INFERENCE_BY_URL_ENDPOINT = process.env.INFERENCE_ENDPOINT || "http://localhost:5000/classify/url"
-const INFERENCE_BY_BLOB_ENDPOINT = process.env.INFERENCE_ENDPOINT || "http://localhost:5000/classify/blob"
+let INFERENCE_BY_URL_ENDPOINT;
+let INFERENCE_BY_BLOB_ENDPOINT;
+
+
+export function setBackendRoute(backend) {
+    INFERENCE_BY_URL_ENDPOINT = `http://${backend}/classify/url`;
+    INFERENCE_BY_BLOB_ENDPOINT = `http://${backend}/classify/blob`;
+    console.log(`Using backend "${backend}"`);
+}
 
 
 export function classifyUrl(url) {

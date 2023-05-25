@@ -1,0 +1,22 @@
+FROM registry.access.redhat.com/ubi8/nodejs-16 as builder
+
+COPY package.json package-lock.json ./
+
+RUN npm ci
+
+COPY . .
+
+RUN npm run build
+
+
+FROM registry.access.redhat.com/ubi8/nodejs-16 as app
+
+ENV NODE_ENV production \
+    NEXT_TELEMETRY_DISABLED 1
+
+COPY --from=builder /opt/app-root/src/.next/standalone ./
+COPY --from=builder /opt/app-root/src/.next/static ./.next/static
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]
