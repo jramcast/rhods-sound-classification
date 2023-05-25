@@ -25,5 +25,6 @@ This application is available as a container image:
 ```
 podman run --rm \
 -p 3000:3000 \
+-e BACKEND=www.example.com
 quay.io/jramcast/rhods-sound-classification-web-frontend
 ```

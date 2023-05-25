@@ -26,7 +26,7 @@ spec:
               protocol: TCP
           env:
             - name: BACKEND
-              value: rhods-sound-classification-web-backend-rht-jramirez-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com
+              value: https://DEFINE-THIS-VALUE/infer
 ---
 apiVersion: v1
 kind: Service

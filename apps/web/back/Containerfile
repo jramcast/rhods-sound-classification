@@ -19,6 +19,7 @@ RUN chown default .tmp && chmod -R 777 .tmp
 USER default
 
 EXPOSE 5000
+ENV NUMBA_CACHE_DIR /opt/app-root/src/.tmp
 
 CMD ${CONDA_BIN} run -n rhods-sound-classification-webapp-backend --no-capture-output \
     flask run --host=0.0.0.0

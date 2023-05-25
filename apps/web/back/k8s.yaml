@@ -29,7 +29,7 @@ spec:
               protocol: TCP
           env:
             - name: INFERENCE_ENDPOINT
-              value: https://soundclassifier-jairamir-sounds-rhods.apps.tools-na100.dev.ole.redhat.com/v2/models/soundclassifier/infer
+              value: https://DEFINE-THIS-VALUE/infer
 ---
 apiVersion: v1
 kind: Service
