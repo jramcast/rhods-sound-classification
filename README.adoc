@@ -13,6 +13,8 @@ Sounds are classified into categories such as `dog`.
   * RHODS model serving: inference is performed in a cluster. Applications such as web front ends can send requests to this model.
   * Embedded model serving: the model can be deployed to devices such as RPI, to perform inference at the edge.
 
+image::./assets/rhods-sound-demo diagram.svg[width=100%,align="center"]
+
 == Prerequisites
 
 To complete this demo, you need the following:
