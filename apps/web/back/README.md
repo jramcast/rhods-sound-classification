@@ -1,4 +1,4 @@
-# Rhods Sound Classification Web App Backend
+# RHODS Sound Classification Web App Backend
 
 This application is available as a container image:
 

@@ -1,4 +1,4 @@
-# Sound Classification Web Application Front End
+# RHODS Sound Classification Web Application Front End
 
 Start the development server:
 
