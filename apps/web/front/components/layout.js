@@ -8,11 +8,7 @@ export default function Layout({ children }) {
     const Header = (
         <PageHeader
             logo={
-                <Brand
-                    src="logo"
-                    alt="Red Hat Training Logo"
-                    className="logo"
-                />
+                <Brand/>
             }
             logoProps={{ href: "/" }}
             showNavToggle

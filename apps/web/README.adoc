@@ -1,0 +1,10 @@
+# RHODS Sound Classification Web Application
+
+To deploy this application:
+
+1. Import the `back/k8s.yaml` file into Red Hat OpenShift.
+Set the `INFERENCE_ENDPOINT` variable before applying the YAML.
+This manifest creates a deployment, a service, and a route for the backend application.
+
+2. Import the `front/k8s.yaml` file into Red Hat OpenShift.
+Set the `BACKEND` variable before applying the YAML (use the backend route).

@@ -1,16 +1,18 @@
 import { useState } from "react";
 import {  TextInput, Form,  Text, Button, TextVariants, TextContent, FormGroup, Page, PageSection } from '@patternfly/react-core';
-import { classifyUrl } from "../services/backend";
+import * as Backend from "../services/backend";
 
-export default function Home() {
+export default function Home( { backendRoute }) {
     const [value, setValue] = useState("https://...");
     const [audioUrl, setAudioURL] = useState("");
     const [classificationResult, setClassificationResult] = useState("");
 
+    Backend.setBackendRoute(backendRoute);
 
     function playAndClassifySound(e) {
         setAudioURL(value);
-        classifyUrl(value)
+
+        Backend.classifyUrl(value)
             .then(result => {
                 const message = `Predicted class: ${result.class_name} (${result.class_id})`;
                 setClassificationResult(message);
@@ -48,3 +50,8 @@ export default function Home() {
     )
 }
 
+
+// This gets called on every request
+export async function getServerSideProps() {
+    return { props: { backendRoute: process.env.BACKEND } };
+}

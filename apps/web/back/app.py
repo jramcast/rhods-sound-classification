@@ -14,8 +14,8 @@ CORS(app)
 app.config['UPLOAD_FOLDER'] = ".tmp"
 
 @app.route('/')
-def hello(name=None):
-    return render_template('index.html', name=name)
+def hello():
+    return "Use /classify/blob or /classify/url"
 
 @app.route("/classify/blob", methods=["POST"])
 def classify_blob():

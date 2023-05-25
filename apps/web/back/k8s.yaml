@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  app.openshift.io/connects-to: >-
+      [{"apiVersion":"apps/v1","kind":"Deployment","name":"rhods-sound-classification-web-backend"}]
+  labels:
+    app: rhods-sound-classification-web-backend
+    app.kubernetes.io/part-of: rhods-sound-classification-webapp
+    app.openshift.io/runtime: python
+  name: rhods-sound-classification-web-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rhods-sound-classification-web-backend
+  template:
+    metadata:
+      labels:
+        app: rhods-sound-classification-web-backend
+    spec:
+      containers:
+        - image: quay.io/jramcast/rhods-sound-classification-web-backend:latest
+          imagePullPolicy: Always
+          name: rhods-sound-classification-web-backend
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+          env:
+            - name: INFERENCE_ENDPOINT
+              value: https://DEFINE-THIS-VALUE/infer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rhods-sound-classification-web-backend
+    app.kubernetes.io/part-of: rhods-sound-classification-webapp
+  name: rhods-sound-classification-web-backend
+spec:
+  type: NodePort
+  ports:
+    - name: 5000-tcp
+      port: 5000
+      targetPort: 5000
+      protocol: TCP
+  selector:
+    app: rhods-sound-classification-web-backend
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: rhods-sound-classification-web-backend
+    app.kubernetes.io/part-of: rhods-sound-classification-webapp
+  name: rhods-sound-classification-web-backend
+spec:
+  port:
+    targetPort: 5000-tcp
+  to:
+    kind: Service
+    name: rhods-sound-classification-web-backend
