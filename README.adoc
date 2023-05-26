@@ -331,6 +331,8 @@ Click btn:[Create].
 d. From the developer perspective of the Red{nbsp}Hat OpenShift web console, click btn:[+Add].
 
 e. In the btn:[From Local Machine] card, click btn:[Import YAML].
++
+image::./assets/import-yaml.png[width=70%,align="center"]
 
 f. Paste the contents of the https://github.com/{github_user}/rhods-sound-classification/blob/main/apps/embedded/pipelines/pipeline.yaml file and click btn:[Create].
 +
@@ -351,6 +353,10 @@ Click btn:[Start].
 +
 Wait for the pipeline to finish.
 If the pipeline succeeds, then the container image of the CLI application should be available in the Red{nbsp}Hat OpenShift internal registry.
++
+image::./assets/pipeline-run.png[width=100%,align="center"]
++
+The image should be available at `default-route-openshift-image-registry.apps.__YOUR_CLUSTER__/__YOUR_PROJECT__/sound-classification-cli`, where `YOUR_CLUSTER` is the name of your OpenShift cluster as displayed in the URL, and `YOUR_PROJECT` is the name of your RHODS project.
 
 
 10. *Run the CLI*
@@ -358,6 +364,8 @@ If the pipeline succeeds, then the container image of the CLI application should
 a. Log in to Red{nbsp}Hat OpenShift with the `oc` CLI.
 +
 In the Red{nbsp}Hat OpenShift web console, click btn:[your-username] in the upper-right corner, then click btn:[Copy login command].
++
+image::./assets/copy-login.png[width=65%,align="center"]
 +
 Log in if prompted, and click btn:[Display Token].
 Copy the `oc login` command under btn:[Log in with this token].
@@ -376,13 +384,13 @@ _...output omitted..._
 Using project ...
 ----
 
-b. Log in with podman into the OpenShift image registry.
+b. Log in with Podman into the OpenShift image registry.
 Replace `__YOUR_USER__` and `__YOUR_SANDBOX__` to match the domain of your OpenShift cluster.
 +
 [subs="+quotes"]
 ----
 $ *podman login -u __YOUR_USER__ -p $(oc whoami -t) \
-  default-route-openshift-image-registry.apps.__YOUR_SANDBOX__.openshiftapps.com*
+  default-route-openshift-image-registry.apps.__YOUR_CLUSTER__*
 
 Login Succeeded!
 ----
@@ -392,7 +400,7 @@ c. Run the CLI container to classify a sound.
 [subs="+quotes,+attributes"]
 ----
 $ *podman run \
-  default-route-openshift-image-registry.apps.__YOUR_SANDBOX__.openshiftapps.com/__YOUR_USER__/sound-classification-cli \
+  default-route-openshift-image-registry.apps.__YOUR_CLUSTER__/__YOUR_PROJECT__/sound-classification-cli \
   https://github.com/{github_user}/rhods-sound-classification/raw/main/samples/waves.wav*
 
 Downloading file...
@@ -407,27 +415,43 @@ This container includes the model, so you can use it to perform inference at the
 
 a. From the developer perspective of the OpenShift web console, and click btn:[+Add], then click btn:[Import YAML].
 
-b. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/back/k8s.yaml file.
-Replace the value of the `INFERENCE_ENDPOINT` environment variable with the inference URL of the model that you have deployed with RHODS Model Serving.
+b. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/back/app.yaml file.
+This manifest deploys a container image that corresponds to the application at `apps/web/back`.
+
+c. Replace the value of the `INFERENCE_ENDPOINT` environment variable with the inference URL of the model that you have deployed with RHODS Model Serving.
+The web backend requires this value to connect to inference URL of the deployed model.
++
+image::./assets/yaml-web-backend.png[width=100%,align="center"]
 +
 Click btn:[Create].
 
-c. In the topology view, click the Python icon that represents the backend application that you just deployed.
+d. In the topology view, click the Python icon that represents the backend application that you just deployed.
 +
 In the pane that opens, copy the URL of the route from the btn:[Routes] section.
 You must pass this URL as an environment variable to the front end.
++
+image::./assets/web-backend-route.png[width=100%,align="center"]
++
 
+e. Click btn:[+Add], then click btn:[Import YAML].
 
-d. Click btn:[+Add], then click btn:[Import YAML].
+f. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/front/app.yaml file.
+This manifest deploys a container image that corresponds to the application at `apps/web/front`.
 
-e. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/front/k8s.yaml file.
-Replace the value of the `BACKEND` environment variable with the route URL of the backend.
+g. Replace the value of the `BACKEND` environment variable with the route URL of the backend.
+The front end requires this value to connect to the back end API.
++
+image::./assets/yaml-web-frontend.png[width=100%,align="center"]
 +
 Click btn:[Create].
 
 f. From the topology view, open the URL of the front-end application.
 
 g. In the front-end application, enter the https://github.com/jramcast/rhods-sound-classification/raw/main/samples/waves.wav URL and wait for the application to classify the sound.
++
+After a few seconds, the application should display the classification result.
++
+image::./assets/frontend-result.png[width=70%,align="center"]
 +
 [NOTE]
 ====

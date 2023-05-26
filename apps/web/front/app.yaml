@@ -29,7 +29,7 @@ spec:
               protocol: TCP
           env:
             - name: BACKEND
-              value: https://DEFINE-THIS-VALUE/infer
+              value: http://DEFINE-THIS-VALUE
 ---
 apiVersion: v1
 kind: Service
