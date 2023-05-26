@@ -8,6 +8,7 @@ This demo uses Red{nbsp}Hat OpenShift Data Science (RHODS) to train and deploy a
 Sounds are classified into categories such as `dog`.
 
 You will deploy the model in two ways:
+// TechEditor:[style] "will" as a future tense is generally avoided. Are te two ways two different options? if yes then, "you can" could be used here.
 
 RHODS Model Serving::
 Inference is performed in the cluster.
@@ -113,7 +114,7 @@ Do not modify the default values of the rest of the fields.
 +
 [NOTE]
 ====
-If you choose a different name for the workbench, you will need to adjust
+If you choose a different name for the workbench, then you will need to adjust
 the following steps accordingly.
 ====
 
@@ -148,8 +149,8 @@ d. In the `Connected workbench` field, select `pytorch`
 to assign this data connection to the `pytorch` workbench.
 
 e. Click btn:[Add data connection].
-This data connection injects the S3 configuration values as environement variables in the `pytorch` workbench.
-RHODS restarts the worbench to inject the variables.
+This data connection injects the S3 configuration values as environment variables in the `pytorch` workbench.
+RHODS restarts the workbench to inject the variables.
 
 
 
@@ -251,7 +252,7 @@ c. Complete the form with the following values.
 |`sound_classifier.onnx`
 |===
 +
-The data connection configuration values allow RHODS to download the `sound_classifier.onnx` model file from S3 and use it to serve the model with the OpenVINO model sever.
+The data connection configuration values allow RHODS to download the `sound_classifier.onnx` model file from S3 and use it to serve the model with the OpenVINO model server.
 
 d. Click btn:[Deploy].
 Wait until the model status is ready.
@@ -308,7 +309,7 @@ b. Enter `s3-model-storage` as the btn:[Secret name].
 +
 [NOTE]
 ====
-If you use a different name, then you will have to adjust this name in the pipeline run.
+If you use a different name, then you must adjust this name in the pipeline run.
 ====
 
 c. Add the following key/values to the secret:
@@ -347,7 +348,7 @@ h. Run the pipeline.
 Click btn:[⋮], then click btn:[Start].
 +
 In the form that opens, select `VolumeClaimTemplate` as the btn:[shared-workspace].
-If you previously created the S3 secret with a name different from `s3-model-storage`, adjust the btn:[s3-secret] field accordingly.
+If you previously created the S3 secret with a name that is different from `s3-model-storage`, then adjust the btn:[s3-secret] field accordingly.
 +
 Click btn:[Start].
 +
@@ -414,6 +415,7 @@ This container includes the model, so you can use it to perform inference at the
 11. *Deploy a web application that uses the deployed model via the Model Service REST API*.
 
 a. From the developer perspective of the OpenShift web console, and click btn:[+Add], then click btn:[Import YAML].
+// TechEditor:[style] This sentence does not make sense. I think the "and" is misplaced. If you remove the "and" then the sentence makes sense. I wasnt sure if you had more intention to introduce something here so I have lf it up to you to take a look at. 
 
 b. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/back/app.yaml file.
 This manifest deploys a container image that corresponds to the application at `apps/web/back`.
@@ -438,8 +440,8 @@ e. Click btn:[+Add], then click btn:[Import YAML].
 f. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/front/app.yaml file.
 This manifest deploys a container image that corresponds to the application at `apps/web/front`.
 
-g. Replace the value of the `BACKEND` environment variable with the route URL of the backend.
-The front end requires this value to connect to the back end API.
+g. Replace the value of the `BACKEND` environment variable with the route URL of the back-end.
+The front end requires this value to connect to the back-end API.
 +
 image::./assets/yaml-web-frontend.png[width=100%,align="center"]
 +
