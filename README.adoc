@@ -2,17 +2,23 @@
 
 :github_user:  jramcast
 
+== Sound Classification Demo with Red{nbsp}Hat OpenShift Data Science
 
-
-== Sound Classification Demo with Red Hat OpenShift Data Science
-
-This demo uses Red{nbsp}Hat OpenShift Data Science (RHODS) to train and deploy a model that classifies sounds.
+This demo uses Red{nbsp}Hat OpenShift Data Science (RHODS) to train and deploy a machine learning model that classifies sounds.
 Sounds are classified into categories such as `dog`.
 
-The model is deployed in two ways:
+You will deploy the model in two ways:
 
-* RHODS model serving: inference is performed in a cluster. Applications such as web front ends can send requests to this model.
-* Embedded model serving: the model can be embedded in a container image and therefore deployed to devices such as RPI, to perform inference at the edge.
+RHODS Model Serving::
+Inference is performed in the cluster.
+Applications such as web front ends can send inference requests to this model via HTTP.
+
+Embedded in a Container Image::
+Inference is performed at the edge.
+The model is embedded in a container image, as a CLI application.
+The container image can be therefore deployed to any environment with a container runtime.
+
+The following diagram illustrates the general flow of this exercise:
 
 image::./assets/rhods-sound-demo diagram.svg[width=100%,align="center"]
 
@@ -21,11 +27,21 @@ image::./assets/rhods-sound-demo diagram.svg[width=100%,align="center"]
 To complete this demo, you need the following:
 
 
-* RHODS installed and running in a cluster.
+* RHODS and Red{nbsp}Hat OpenShift Pipelines installed and running in a cluster.
 +
 [NOTE]
 ====
 You can get an instance of RHODS in the https://developers.redhat.com/developer-sandbox[Developer Sandbox].
+====
++
+[NOTE]
+====
+This demo has been tested on the following versions:
+
+[compact]
+* Red{nbsp}Hat OpenShift Container Platform: 4.10
+* Red{nbsp}Hat OpenShift Data Science: 1.26
+* Red{nbsp}Hat OpenShift Pipelines: 1.10.2
 ====
 
 * Access to an S3 storage bucket (to store the trained model).
@@ -45,7 +61,7 @@ You can download `oc` from https://mirror.openshift.com/pub/openshift-v4/clients
 
 == Instructions
 
-1. *Open Red{nbsp}Hat OpenShift Data Science (RHODS).*
+1. *Open the RHODS dashboard.*
 
 a. In a web browser, navigate to the Web Console of your Red{nbsp}Hat OpenShift cluster, and log in.
 
