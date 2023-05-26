@@ -2,6 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    app.openshift.io/connects-to: >-
+        [{"apiVersion":"apps/v1","kind":"Deployment","name":"rhods-sound-classification-web-backend"}]
   labels:
     app: rhods-sound-classification-web-frontend
     app.kubernetes.io/part-of: rhods-sound-classification-webapp
