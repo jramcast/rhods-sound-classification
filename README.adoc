@@ -347,7 +347,7 @@ h. Run the pipeline.
 Click btn:[⋮], then click btn:[Start].
 +
 In the form that opens, select `VolumeClaimTemplate` as the btn:[shared-workspace].
-If you previously created the S3 secrets with a name different from `s3-model-storage`, adjust the btn:[s3-secret] accordingly.
+If you previously created the S3 secret with a name different from `s3-model-storage`, adjust the btn:[s3-secret] field accordingly.
 +
 Click btn:[Start].
 +
@@ -365,7 +365,7 @@ a. Log in to Red{nbsp}Hat OpenShift with the `oc` CLI.
 +
 In the Red{nbsp}Hat OpenShift web console, click btn:[your-username] in the upper-right corner, then click btn:[Copy login command].
 +
-image::./assets/copy-login.png[width=65%,align="center"]
+image::./assets/copy-login.png[width=55%,align="center"]
 +
 Log in if prompted, and click btn:[Display Token].
 Copy the `oc login` command under btn:[Log in with this token].
