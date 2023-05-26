@@ -107,7 +107,7 @@ spec:
       - fetch-repository
 
   # Build and push the container image
-  - name: build-webapp
+  - name: build-cli
     taskRef:
       name: buildah
       kind: ClusterTask

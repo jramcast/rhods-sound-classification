@@ -2,17 +2,23 @@
 
 :github_user:  jramcast
 
+== Sound Classification Demo with Red{nbsp}Hat OpenShift Data Science
 
-
-== Sound Classification Demo with Red Hat OpenShift Data Science
-
-This demo uses Red{nbsp}Hat OpenShift Data Science (RHODS) to train and deploy a model that classifies sounds.
+This demo uses Red{nbsp}Hat OpenShift Data Science (RHODS) to train and deploy a machine learning model that classifies sounds.
 Sounds are classified into categories such as `dog`.
 
-The model is deployed in two ways:
+You will deploy the model in two ways:
 
-* RHODS model serving: inference is performed in a cluster. Applications such as web front ends can send requests to this model.
-* Embedded model serving: the model can be embedded in a container image and therefore deployed to devices such as RPI, to perform inference at the edge.
+RHODS Model Serving::
+Inference is performed in the cluster.
+Applications such as web front ends can send inference requests to this model via HTTP.
+
+Embedded in a Container Image::
+Inference is performed at the edge.
+The model is embedded in a container image, as a CLI application.
+The container image can be therefore deployed to any environment with a container runtime.
+
+The following diagram illustrates the general flow of this exercise:
 
 image::./assets/rhods-sound-demo diagram.svg[width=100%,align="center"]
 
@@ -21,11 +27,21 @@ image::./assets/rhods-sound-demo diagram.svg[width=100%,align="center"]
 To complete this demo, you need the following:
 
 
-* RHODS installed and running in a cluster.
+* RHODS and Red{nbsp}Hat OpenShift Pipelines installed and running in a cluster.
 +
 [NOTE]
 ====
 You can get an instance of RHODS in the https://developers.redhat.com/developer-sandbox[Developer Sandbox].
+====
++
+[NOTE]
+====
+This demo has been tested on the following versions:
+
+[compact]
+* Red{nbsp}Hat OpenShift Container Platform: 4.10
+* Red{nbsp}Hat OpenShift Data Science: 1.26
+* Red{nbsp}Hat OpenShift Pipelines: 1.10.2
 ====
 
 * Access to an S3 storage bucket (to store the trained model).
@@ -45,7 +61,7 @@ You can download `oc` from https://mirror.openshift.com/pub/openshift-v4/clients
 
 == Instructions
 
-1. *Open Red{nbsp}Hat OpenShift Data Science (RHODS).*
+1. *Open the RHODS dashboard.*
 
 a. In a web browser, navigate to the Web Console of your Red{nbsp}Hat OpenShift cluster, and log in.
 
@@ -71,6 +87,11 @@ image::./assets/rhods-side-menu.png[width=35%,align="center"]
 b. Create a data science project.
 Click btn:[Create data science project].
 In the modal window that opens, enter a name and click btn:[Create].
++
+[NOTE]
+====
+If you are using Red{nbsp}Hat OpenShift from the developer sandbox, then a project is already created for you.
+====
 
 c. Click the newly created project.
 
@@ -152,7 +173,7 @@ The model server is now configured and ready to serve models.
 
 5. *Open the workbench and clone the demo code.*
 +
-You will use this code to train and deploy the model.
+You will use the demo code to train and deploy the model.
 
 a. Make sure that the `pytorch` workbench is running and click btn:[Open].
 +
@@ -185,11 +206,15 @@ a. Download the dataset.
 +
 Double-click the `0-download.ipynb` notebook.
 In the top navigation bar, click menu:Run[Run All Cells].
++
+Inspect the notebook.
 
 b. Analyze the data.
 +
 Double-click the `1-analysis.ipynb` notebook.
 In the top navigation bar, click menu:Run[Run All Cells].
++
+Inspect the notebook.
 
 c. Train the model.
 +
@@ -245,11 +270,10 @@ b. In the `pytorch` workbench, click btn:[⋮], and then click btn:[Edit workben
 +
 image::./assets/edit-workbench-btn.png[width=30%,align="center"]
 
-c. Scroll down to the `Environment variables` and add a new variable.
+c. Scroll down to the `Environment variables` section and add a new variable.
 Select `Config Map` as the variable type, then select `Key / value`, and set the key and value of the variable:
   * Key: `INFERENCE_ENDPOINT`.
   * Value: The inference endpoint of the deployed model.
-  +
 +
 image::./assets/workbench-env-vars.png[width=70%,align="center"]
 
@@ -262,8 +286,8 @@ In the top navigation bar, click menu:Run[Run All Cells].
 +
 Note that the notebook tests the same model by using two approaches:
 +
-  * The first test uses the `sound_classifier.onnx` model file that resulted from training the model.
-  * The second test verifies the model deployed with RHODS model serving, by sending an HTTP request to the inference endpoint.
+  * The first test uses the `sound_classifier.onnx` local file that contains the trained model.
+  * The second test verifies the model deployed with RHODS Model Serving, by sending an HTTP request to the inference endpoint.
 
 g. Verify that the notebook displays the estimated class both by using the local model and the deployed model.
 
@@ -307,6 +331,8 @@ Click btn:[Create].
 d. From the developer perspective of the Red{nbsp}Hat OpenShift web console, click btn:[+Add].
 
 e. In the btn:[From Local Machine] card, click btn:[Import YAML].
++
+image::./assets/import-yaml.png[width=70%,align="center"]
 
 f. Paste the contents of the https://github.com/{github_user}/rhods-sound-classification/blob/main/apps/embedded/pipelines/pipeline.yaml file and click btn:[Create].
 +
@@ -321,12 +347,16 @@ h. Run the pipeline.
 Click btn:[⋮], then click btn:[Start].
 +
 In the form that opens, select `VolumeClaimTemplate` as the btn:[shared-workspace].
-If you previously created the S3 secrets with a name different from `s3-model-storage`, adjust the btn:[s3-secret] accordingly.
+If you previously created the S3 secret with a name different from `s3-model-storage`, adjust the btn:[s3-secret] field accordingly.
 +
 Click btn:[Start].
 +
 Wait for the pipeline to finish.
 If the pipeline succeeds, then the container image of the CLI application should be available in the Red{nbsp}Hat OpenShift internal registry.
++
+image::./assets/pipeline-run.png[width=100%,align="center"]
++
+The image should be available at `default-route-openshift-image-registry.apps.__YOUR_CLUSTER__/__YOUR_PROJECT__/sound-classification-cli`, where `YOUR_CLUSTER` is the name of your OpenShift cluster as displayed in the URL, and `YOUR_PROJECT` is the name of your RHODS project.
 
 
 10. *Run the CLI*
@@ -334,6 +364,8 @@ If the pipeline succeeds, then the container image of the CLI application should
 a. Log in to Red{nbsp}Hat OpenShift with the `oc` CLI.
 +
 In the Red{nbsp}Hat OpenShift web console, click btn:[your-username] in the upper-right corner, then click btn:[Copy login command].
++
+image::./assets/copy-login.png[width=55%,align="center"]
 +
 Log in if prompted, and click btn:[Display Token].
 Copy the `oc login` command under btn:[Log in with this token].
@@ -352,13 +384,13 @@ _...output omitted..._
 Using project ...
 ----
 
-b. Log in with podman into the OpenShift image registry.
+b. Log in with Podman into the OpenShift image registry.
 Replace `__YOUR_USER__` and `__YOUR_SANDBOX__` to match the domain of your OpenShift cluster.
 +
 [subs="+quotes"]
 ----
 $ *podman login -u __YOUR_USER__ -p $(oc whoami -t) \
-  default-route-openshift-image-registry.apps.__YOUR_SANDBOX__.openshiftapps.com*
+  default-route-openshift-image-registry.apps.__YOUR_CLUSTER__*
 
 Login Succeeded!
 ----
@@ -368,7 +400,7 @@ c. Run the CLI container to classify a sound.
 [subs="+quotes,+attributes"]
 ----
 $ *podman run \
-  default-route-openshift-image-registry.apps.__YOUR_SANDBOX__.openshiftapps.com/__YOUR_USER__/sound-classification-cli \
+  default-route-openshift-image-registry.apps.__YOUR_CLUSTER__/__YOUR_PROJECT__/sound-classification-cli \
   https://github.com/{github_user}/rhods-sound-classification/raw/main/samples/waves.wav*
 
 Downloading file...
@@ -383,27 +415,43 @@ This container includes the model, so you can use it to perform inference at the
 
 a. From the developer perspective of the OpenShift web console, and click btn:[+Add], then click btn:[Import YAML].
 
-b. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/back/k8s.yaml file.
-Replace the value of the `INFERENCE_ENDPOINT` environment variable with the inference URL of the model that you have deployed with RHODS Model Serving.
+b. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/back/app.yaml file.
+This manifest deploys a container image that corresponds to the application at `apps/web/back`.
+
+c. Replace the value of the `INFERENCE_ENDPOINT` environment variable with the inference URL of the model that you have deployed with RHODS Model Serving.
+The web backend requires this value to connect to inference URL of the deployed model.
++
+image::./assets/yaml-web-backend.png[width=100%,align="center"]
 +
 Click btn:[Create].
 
-c. In the topology view, click the Python icon that represents the backend application that you just deployed.
+d. In the topology view, click the Python icon that represents the backend application that you just deployed.
 +
 In the pane that opens, copy the URL of the route from the btn:[Routes] section.
 You must pass this URL as an environment variable to the front end.
++
+image::./assets/web-backend-route.png[width=100%,align="center"]
++
 
+e. Click btn:[+Add], then click btn:[Import YAML].
 
-d. Click btn:[+Add], then click btn:[Import YAML].
+f. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/front/app.yaml file.
+This manifest deploys a container image that corresponds to the application at `apps/web/front`.
 
-e. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/front/k8s.yaml file.
-Replace the value of the `BACKEND` environment variable with the route URL of the backend.
+g. Replace the value of the `BACKEND` environment variable with the route URL of the backend.
+The front end requires this value to connect to the back end API.
++
+image::./assets/yaml-web-frontend.png[width=100%,align="center"]
 +
 Click btn:[Create].
 
 f. From the topology view, open the URL of the front-end application.
 
 g. In the front-end application, enter the https://github.com/jramcast/rhods-sound-classification/raw/main/samples/waves.wav URL and wait for the application to classify the sound.
++
+After a few seconds, the application should display the classification result.
++
+image::./assets/frontend-result.png[width=70%,align="center"]
 +
 [NOTE]
 ====
