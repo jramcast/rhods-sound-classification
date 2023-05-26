@@ -87,6 +87,11 @@ image::./assets/rhods-side-menu.png[width=35%,align="center"]
 b. Create a data science project.
 Click btn:[Create data science project].
 In the modal window that opens, enter a name and click btn:[Create].
++
+[NOTE]
+====
+If you are using Red{nbsp}Hat OpenShift from the developer sandbox, then a project is already created for you.
+====
 
 c. Click the newly created project.
 
@@ -168,7 +173,7 @@ The model server is now configured and ready to serve models.
 
 5. *Open the workbench and clone the demo code.*
 +
-You will use this code to train and deploy the model.
+You will use the demo code to train and deploy the model.
 
 a. Make sure that the `pytorch` workbench is running and click btn:[Open].
 +
@@ -201,11 +206,15 @@ a. Download the dataset.
 +
 Double-click the `0-download.ipynb` notebook.
 In the top navigation bar, click menu:Run[Run All Cells].
++
+Inspect the notebook.
 
 b. Analyze the data.
 +
 Double-click the `1-analysis.ipynb` notebook.
 In the top navigation bar, click menu:Run[Run All Cells].
++
+Inspect the notebook.
 
 c. Train the model.
 +
@@ -261,11 +270,10 @@ b. In the `pytorch` workbench, click btn:[⋮], and then click btn:[Edit workben
 +
 image::./assets/edit-workbench-btn.png[width=30%,align="center"]
 
-c. Scroll down to the `Environment variables` and add a new variable.
+c. Scroll down to the `Environment variables` section and add a new variable.
 Select `Config Map` as the variable type, then select `Key / value`, and set the key and value of the variable:
   * Key: `INFERENCE_ENDPOINT`.
   * Value: The inference endpoint of the deployed model.
-  +
 +
 image::./assets/workbench-env-vars.png[width=70%,align="center"]
 
@@ -278,8 +286,8 @@ In the top navigation bar, click menu:Run[Run All Cells].
 +
 Note that the notebook tests the same model by using two approaches:
 +
-  * The first test uses the `sound_classifier.onnx` model file that resulted from training the model.
-  * The second test verifies the model deployed with RHODS model serving, by sending an HTTP request to the inference endpoint.
+  * The first test uses the `sound_classifier.onnx` local file that contains the trained model.
+  * The second test verifies the model deployed with RHODS Model Serving, by sending an HTTP request to the inference endpoint.
 
 g. Verify that the notebook displays the estimated class both by using the local model and the deployed model.
 
