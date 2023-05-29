@@ -7,8 +7,7 @@
 This demo uses Red{nbsp}Hat OpenShift Data Science (RHODS) to train and deploy a machine learning model that classifies sounds.
 Sounds are classified into categories such as `dog`.
 
-You will deploy the model in two ways:
-// TechEditor:[style] "will" as a future tense is generally avoided. Are te two ways two different options? if yes then, "you can" could be used here.
+The demo instructions guide you to deploy the model in two ways:
 
 RHODS Model Serving::
 Inference is performed in the cluster.
@@ -414,7 +413,7 @@ This container includes the model, so you can use it to perform inference at the
 
 11. *Deploy a web application that uses the deployed model via the Model Service REST API*.
 
-a. From the developer perspective of the OpenShift web console, and click btn:[+Add], then click btn:[Import YAML].
+a. From the developer perspective of the OpenShift web console, click btn:[+Add], then click btn:[Import YAML].
 // TechEditor:[style] This sentence does not make sense. I think the "and" is misplaced. If you remove the "and" then the sentence makes sense. I wasnt sure if you had more intention to introduce something here so I have lf it up to you to take a look at. 
 
 b. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/back/app.yaml file.
@@ -440,7 +439,7 @@ e. Click btn:[+Add], then click btn:[Import YAML].
 f. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/front/app.yaml file.
 This manifest deploys a container image that corresponds to the application at `apps/web/front`.
 
-g. Replace the value of the `BACKEND` environment variable with the route URL of the back-end.
+g. Replace the value of the `BACKEND` environment variable with the route URL of the back end.
 The front end requires this value to connect to the back-end API.
 +
 image::./assets/yaml-web-frontend.png[width=100%,align="center"]
