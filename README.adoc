@@ -414,7 +414,6 @@ This container includes the model, so you can use it to perform inference at the
 11. *Deploy a web application that uses the deployed model via the Model Service REST API*.
 
 a. From the developer perspective of the OpenShift web console, click btn:[+Add], then click btn:[Import YAML].
-// TechEditor:[style] This sentence does not make sense. I think the "and" is misplaced. If you remove the "and" then the sentence makes sense. I wasnt sure if you had more intention to introduce something here so I have lf it up to you to take a look at. 
 
 b. In the form, paste the contents of the https://github.com/jramcast/rhods-sound-classification/blob/main/apps/web/back/app.yaml file.
 This manifest deploys a container image that corresponds to the application at `apps/web/back`.
